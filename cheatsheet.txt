@@ -1,0 +1,50 @@
+Password!
+
+#installing mod security
+sudo yum install mod_security
+sudo /etc/init.d/httpd restart
+
+#installing fail2ban
+sudo yum install fail2ban
+
+#making a new sudo user
+user add USER
+passwd USER
+
+visudo -- change the comment of %wheel
+
+usermod -aG wheel USER
+
+su USER to change to user
+
+
+#configure iptables
+
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+systemctl mask firewalld
+
+sudo yum install iptables-services
+systemctl start iptables
+systemctl enable iptables
+
+#Restarting iptables
+sudo systemctl restart iptables
+
+
+https://www.tecmint.com/linux-iptables-firewall-rules-examples-commands/
+#accept ports
+ iptables -A INPUT  -p tcp -m multiport --dports 80,443,953,53,110,25 -j ACCEPT
+ iptables -A OUTPUT-p tcp -m multiport --dports 80,443,953,53,110,25 -j ACCEPT
+#deny everytying else
+iptables -A OUTPUT -j DROP
+iptables -A INPUT -j DROP
+
+SAVING
+iptables-save > BACKUP FILE
+iptables-restore < BACKUP FILE
+
+# iptables -A INPUT -p tcp --dport 80 -m limit --limit 60/minute --limit-burst 200 -j ACCEPT
+# iptables -A INPUT -p tcp --dport 443 -m limit --limit 60/minute --limit-burst 200 -j ACCEPT
+
+# iptables -A INPUT -i eth0 -j LOG --log-prefix "IPtables dropped packets:"
